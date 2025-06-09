@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .card {
+        height: 100%; /* 🔹 Todas las tarjetas tendrán el mismo tamaño */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body {
+        flex-grow: 1; /* 🔹 Permite que el contenido se distribuya uniformemente */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .card-img-top {
+        height: 220px; /* 🔹 Tamaño uniforme de imágenes */
+        object-fit: cover; /* 🔹 Ajusta la imagen sin deformarla */
+        border-bottom: 2px solid #ddd; /* 🔹 Separación visual */
+    }
+
+    .card-footer {
+        margin-top: auto; /* 🔹 Mantiene el footer en la parte inferior */
+    }
+
+    /* 🔹 Mejorar el texto de la oferta */
+    .badge.bg-danger {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+</style>
+
+<script>
+    function actualizarTotal(id, precio) {
+        let cantidad = document.getElementById("cantidad_" + id).value;
+        let totalElement = document.getElementById("total_" + id);
+        let total = (cantidad * precio).toFixed(2); // 🔹 Solo 2 decimales
+
+        if (cantidad > 1) {
+            totalElement.innerHTML = `<i class="fas fa-coins"></i> Total: ${total}€`;
+            totalElement.style.display = "block";
+        } else {
+            totalElement.style.display = "none";
+        }
+    }
+</script>
+
+<div class="container mt-4">
+    <h2 class="text-center text-white mb-4"><i class="fas fa-search"></i> Resultados para "{{ query }}"</h2>
+
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} fade show">
+                <i class="fas fa-exclamation-circle"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <!-- 🔹 Resultados de categorías -->
+    {% if categorias|length > 0 %}
+        <h3 class="text-white mb-3"><i class="fas fa-folder-open"></i> Categorías encontradas:</h3>
+        <div class="d-flex gap-3 flex-wrap">
+            {% for categoria in categorias %}
+                <a href="{{ path('category_products', {'id': categoria.id}) }}" class="btn btn-outline-light">
+                    <i class="fas fa-tags"></i> {{ categoria.nombre }}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- 🔹 Resultados de productos -->
+    {% if productos|length > 0 %}
+        <h3 class="text-white mt-4 mb-3"><i class="fas fa-box"></i> Productos encontrados:</h3>
+        <div class="row">
+            {% for producto in productos %}
+                <div class="col-md-4">
+                    <div class="card shadow">
+                        <a href="{{ path('product_details', {'id': producto.id}) }}" class="text-decoration-none text-dark">
+                            <img src="{{ producto.imagen }}" class="card-img-top" alt="{{ producto.nombre }}">
+                            <div class="card-body">
+                                {% if producto.oferta %}
+                                    <span class="badge bg-danger text-white mb-2"><i class="fas fa-tags"></i> ¡EN OFERTA!</span>
+                                {% endif %}
+                                <h5 class="card-title"><i class="fas fa-box-open"></i> {{ producto.nombre }}</h5>
+                                <p class="card-text">{{ producto.descripcion }}</p>
+                                <p class="fw-bold text-danger"><i class="fas fa-euro-sign"></i> {{ producto.precio }}€</p>
+                                {% if producto.cantidad > 0 %}
+                                    <p class="fw-bold text-success"><i class="fas fa-check-circle"></i> DISPONIBLE</p>
+                                {% else %}
+                                    <p class="fw-bold text-danger"><i class="fas fa-times-circle"></i> NO DISPONIBLE</p>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% if app.user and producto.cantidad > 0 %}
+                            <div class="card-footer text-center">
+                                <form method="post" action="{{ path('add_cart', {'id': producto.id}) }}">
+                                    <label for="cantidad_{{ producto.id }}" class="fw-bold">
+                                        <i class="fas fa-boxes"></i> Cantidad:
+                                    </label>
+                                    <input type="number" id="cantidad_{{ producto.id }}" name="cantidad" class="form-control"
+                                        min="1" max="{{ producto.cantidad }}" value="1" 
+                                        oninput="actualizarTotal('{{ producto.id }}', {{ producto.precio }})">
+
+                                    <!-- 🔹 Elemento que muestra el total con 2 decimales -->
+                                    <p id="total_{{ producto.id }}" class="fw-bold text-success mt-2" style="display: none;"></p>
+                                    
+                                    <button type="submit" class="btn btn-primary mt-2 w-100">
+                                        <i class="fas fa-shopping-cart"></i> Añadir al carrito
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-secondary mt-4">
+            <i class="fas fa-times-circle"></i> No se encontraron productos ni categorías con "{{ query }}".
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

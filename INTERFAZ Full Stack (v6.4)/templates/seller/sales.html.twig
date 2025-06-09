@@ -1,0 +1,32 @@
+{% extends "user/index.html.twig" %}
+
+{% block profile_content %}
+<h3 class="text-primary"><i class="fas fa-chart-line"></i> Mis Ventas</h3>
+
+{% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type }} fade show">
+            <i class="fas fa-exclamation-circle"></i> {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="list-group">
+    {% for venta in ventas %}
+        <a href="{{ path('product_details', {'id': venta.idProducto.id}) }}" class="text-decoration-none text-dark">
+            <div class="list-group-item d-flex align-items-center gap-3">
+                <img src="{{ venta.idProducto.imagen }}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                <div>
+                    <p><strong><i class="fas fa-box"></i> Producto:</strong> {{ venta.idProducto.nombre }}</p>
+                    <p><strong><i class="fas fa-boxes"></i> Cantidad Vendida:</strong> {{ venta.cantidad }}</p>
+                    <p><strong><i class="fas fa-euro-sign"></i> Total:</strong> €{{ venta.precioTotal }}</p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+{% if ventas|length == 0 %}
+    <p class="text-center text-secondary mt-4"><i class="fas fa-times-circle"></i> Aún no has realizado ventas.</p>
+{% endif %}
+{% endblock %}

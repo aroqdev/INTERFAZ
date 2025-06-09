@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow animate-fade-in">
+                <div class="card-body">
+                    <h2 class="text-center mb-4"><i class="fab fa-paypal"></i> Editar Cuenta de PayPal</h2>
+
+                    <!-- 🔹 Mensajes Flash -->
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type }} fade show">
+                                <i class="fas fa-exclamation-circle"></i> {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {{ form_start(form) }}
+
+                    <!-- 🔹 Campo de PayPal -->
+                    <div class="mb-3 animate-input">
+                        <label for="paypal" class="form-label"><i class="fas fa-envelope"></i> Correo asociado a PayPal:</label>
+                        {{ form_widget(form.paypal, {'attr': {'class': 'form-control'} }) }}
+                    </div>
+
+                    <div class="mb-3 animate-input">
+                        {{ form_widget(form.activo, {'attr': {'class': 'form-check-input'} }) }}
+                        <label for="{{ form.activo.vars.id }}" class="form-check-label">
+                            <i class="fas fa-money-check-alt"></i> Establecer como método de pago predeterminado
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning w-100 animate-hover">
+                        <i class="fas fa-save"></i> Guardar Cuenta de PayPal
+                    </button>
+                    {{ form_end(form) }}
+
+                    <div class="text-center mt-3">
+                        <a href="{{ path('profile_payments') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver a Métodos de Pago
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow animate-fade-in"> <!-- 🔹 Aplicamos fade-in -->
+                <div class="card-body">
+                    <h2 class="text-center mb-4"><i class="fas fa-edit"></i> Editar Producto</h2>
+
+                    <!-- 🔹 Mensajes Flash -->
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type }} fade show">
+                                <i class="fas fa-exclamation-circle"></i> {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    <!-- 🔹 Formulario -->
+                    {{ form_start(form) }}
+                        <div class="mb-3 animate-input">
+                            <label for="imagen" class="form-label"><i class="fas fa-image"></i> Imagen:</label>
+                            {{ form_widget(form.imagen, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="nombre" class="form-label"><i class="fas fa-box"></i> Nombre del producto:</label>
+                            {{ form_widget(form.nombre, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="descripcion" class="form-label"><i class="fas fa-info-circle"></i> Descripción:</label>
+                            {{ form_widget(form.descripcion, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="cantidad" class="form-label"><i class="fas fa-boxes"></i> Cantidad disponible:</label>
+                            {{ form_widget(form.cantidad, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="precio" class="form-label"><i class="fas fa-euro-sign"></i> Precio:</label>
+                            {{ form_widget(form.precio, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="precio_anterior" class="form-label"><i class="fas fa-tags"></i> Precio anterior:</label>
+                            {{ form_widget(form.precio_anterior, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            {{ form_widget(form.oferta, {'attr': {'class': 'form-check-input'} }) }}
+                            <label for="{{ form.oferta.vars.id }}" class="form-check-label">
+                                <i class="fas fa-tag"></i> Activar oferta
+                            </label>
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="idCat" class="form-label"><i class="fas fa-list-alt"></i> Categoría:</label>
+                            {{ form_widget(form.idCat, {'attr': {'class': 'form-select'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            {{ form_widget(form.activo, {'attr': {'class': 'form-check-input'} }) }}
+                            <label for="{{ form.activo.vars.id }}" class="form-check-label">
+                                <i class="fas fa-eye"></i> ¿Publicar este producto ahora?
+                            </label>
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="idUser" class="form-label"><i class="fas fa-user"></i> Vendedor:</label>
+                            {{ form_widget(form.idUser, {'attr': {'class': 'form-select'} }) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 animate-hover">
+                            <i class="fas fa-save"></i> Actualizar Producto
+                        </button>
+                    {{ form_end(form) }}
+
+                    <div class="text-center mt-3">
+                        <a href="{{ path('admin_products') }}" class="btn btn-secondary animate-hover">
+                            <i class="fas fa-arrow-left"></i> Volver a Productos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

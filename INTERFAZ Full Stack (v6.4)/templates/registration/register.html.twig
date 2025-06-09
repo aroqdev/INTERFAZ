@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow animate-fade-in"> <!-- 🔹 Aplicamos fade-in -->
+                <div class="card-body">
+                    <h2 class="text-center mb-4"><i class="fas fa-user-plus"></i> Registro de usuario</h2>
+
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type }} fade show">
+                                <i class="fas fa-exclamation-circle"></i> {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {{ form_start(form) }}
+                        <div class="mb-3 animate-input">
+                            <label for="nombre" class="form-label"><i class="fas fa-user"></i> Nombre:</label>
+                            {{ form_widget(form.nombre, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="apellido" class="form-label"><i class="fas fa-user"></i> Apellido:</label>
+                            {{ form_widget(form.apellido, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="email" class="form-label"><i class="fas fa-envelope"></i> Correo electrónico:</label>
+                            {{ form_widget(form.email, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="password" class="form-label"><i class="fas fa-lock"></i> Contraseña:</label>
+                            {{ form_widget(form.password, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+
+                        <div class="mb-3 animate-input">
+                            <label for="roles" class="form-label"><i class="fas fa-user-shield"></i> Rol de usuario:</label>
+                            {{ form_widget(form.roles, {'attr': {'class': 'form-select'} }) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 animate-hover">
+                            <i class="fas fa-user-check"></i> Registrarse
+                        </button>
+                    {{ form_end(form) }}
+
+                    <p class="text-center mt-3">
+                        ¿Ya tienes una cuenta? <a href="{{ path('app_login') }}">
+                            <i class="fas fa-sign-in-alt"></i> Inicia sesión aquí
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

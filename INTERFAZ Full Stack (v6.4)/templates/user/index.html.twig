@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- 🔹 Barra lateral de navegación -->
+        <div class="col-md-3">
+            <div class="card shadow bg-dark text-white">
+                <div class="card-body text-center">
+                    <h4 class="fw-bold"><i class="fas fa-user"></i> {{ app.user.nombre }} {{ app.user.apellido }}</h4>
+                    <p class="text-white"><i class="fas fa-envelope"></i> {{ app.user.email }}</p>
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger w-100">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                    </a>
+                </div>
+            </div>
+
+            <div class="list-group mt-3 shadow">
+                <a href="{{ path('profile_data') }}" class="list-group-item list-group-item-action {% if app.request.get('_route') == 'profile_data' %}active{% endif %}">
+                    <i class="fas fa-id-card"></i> Datos Personales
+                </a>
+                <a href="{{ path('profile_addresses') }}" class="list-group-item list-group-item-action {% if app.request.get('_route') == 'profile_addresses' %}active{% endif %}">
+                    <i class="fas fa-map-marker-alt"></i> Direcciones
+                </a>
+                <a href="{{ path('profile_payments') }}" class="list-group-item list-group-item-action {% if app.request.get('_route') == 'profile_payments' %}active{% endif %}">
+                    <i class="fas fa-credit-card"></i> Métodos de Pago
+                </a>
+                <a href="{{ path('profile_orders') }}" class="list-group-item list-group-item-action {% if app.request.get('_route') == 'profile_orders' %}active{% endif %}">
+                    <i class="fas fa-shopping-cart"></i> Mis Compras
+                </a>
+                {% if app.user.roles[0] == 'ROLE_SELLER' %}
+                    <a href="{{ path('seller_product') }}" class="list-group-item list-group-item-action {% if app.request.get('_route') == 'seller_product' %}active{% endif %}">
+                        <i class="fas fa-box"></i> Mis Productos
+                    </a>
+                    <a href="{{ path('seller_sale') }}" class="list-group-item list-group-item-action {% if app.request.get('_route') == 'seller_sale' %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i> Mis Ventas
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 🔹 Contenido dinámico -->
+        <div class="col-md-9">
+            <div class="card shadow">
+                <div class="card-body">
+                    {% block profile_content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

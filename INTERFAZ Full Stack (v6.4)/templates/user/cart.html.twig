@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .card {
+        height: 100%; /* 🔹 Todas las tarjetas tendrán el mismo tamaño */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body {
+        flex-grow: 1; /* 🔹 Permite que el contenido se distribuya uniformemente */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .card-img-top {
+        height: 220px; /* 🔹 Tamaño uniforme de imágenes */
+        object-fit: cover; /* 🔹 Ajusta la imagen sin deformarla */
+        border-bottom: 2px solid #ddd; /* 🔹 Separación visual */
+    }
+
+    .card-footer {
+        margin-top: auto; /* 🔹 Mantiene el footer en la parte inferior */
+    }
+
+    /* 🔹 Mejorar el texto de la oferta */
+    .badge.bg-danger {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+</style>
+
+<script>
+    function activarBotonActualizar(id) {
+        document.getElementById("cantidadHidden_" + id).value = document.getElementById("cantidad_" + id).value;
+        document.getElementById("btnActualizar_" + id).disabled = false;
+    }
+</script>
+
+<div class="container mt-4">
+    <h2 class="text-center text-white mb-4"><i class="fas fa-shopping-cart"></i> Tu Carrito</h2>
+
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} fade show">
+                <i class="fas fa-exclamation-circle"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
+    {% if cartItems|length > 0 %}
+        <!-- 🔹 Sección de total y pago en la parte superior -->
+        <div class="text-center mb-4 p-3 bg-dark rounded shadow">
+            <h3 class="text-white"><i class="fas fa-calculator"></i> Total del carrito: <span class="fw-bold text-warning">{{ totalCarrito }}€</span></h3>
+            <a href="{{ path('cart_checkout') }}" class="btn btn-success btn-lg mt-3">
+                <i class="fas fa-credit-card"></i> Proceder al pago
+            </a>
+        </div>
+        
+        <div class="row">
+            {% for item in cartItems %}
+                <div class="col-md-4">
+                    <div class="card shadow">
+                        <a href="{{ path('product_details', {'id': item.idProducto.id}) }}" class="text-decoration-none text-dark">
+                            <img src="{{ item.idProducto.imagen }}" class="card-img-top" alt="{{ item.idProducto.nombre }}">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-box"></i> {{ item.idProducto.nombre }}</h5>
+                                <p class="card-text"><i class="fas fa-info-circle"></i> {{ item.idProducto.descripcion }}</p>
+                                <p class="fw-bold text-danger">
+                                    {% if item.idProducto.oferta %}
+                                        <span class="text-decoration-line-through"><i class="fas fa-euro-sign"></i> {{ item.idProducto.precioAnterior }}€</span>
+                                    {% endif %}
+                                    <i class="fas fa-tag"></i> {{ item.precioUnidad }}€ x {{ item.cantidad }} unidades
+                                </p>
+                                <p class="fw-bold"><i class="fas fa-coins"></i> Total: {{ item.precioTotal }}€</p>
+                            </div>
+                        </a>
+                        <!-- 🔹 Control de cantidad -->
+                        {% if app.user %}
+                            <div class="card-footer text-center">
+                                <div class="input-group mb-3">
+                                    <form method="post" action="{{ path('decrease_cart', {'id': item.id}) }}">
+                                        <button type="submit" class="btn btn-outline-primary" {% if item.cantidad <= 1 %}disabled{% endif %}>
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </form>
+                                    
+                                    <!-- 🔹 Input de cantidad -->
+                                    <input type="number" name="cantidad" class="form-control text-center"
+                                        min="1" max="{{ item.idProducto.cantidad }}" value="{{ item.cantidad }}"
+                                        id="cantidad_{{ item.id }}" oninput="activarBotonActualizar('{{ item.id }}')">
+                                    
+                                    <form method="post" action="{{ path('increase_cart', {'id': item.id}) }}">
+                                        <button type="submit" class="btn btn-outline-primary" {% if item.cantidad >= item.idProducto.cantidad %}disabled{% endif %}>
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- 🔹 Botón de actualizar cantidad -->
+                                <form method="post" action="{{ path('update_cart', {'id': item.id}) }}">
+                                    <input type="hidden" name="cantidad" id="cantidadHidden_{{ item.id }}">
+                                    <button type="submit" class="btn btn-warning w-100" id="btnActualizar_{{ item.id }}" disabled>
+                                        <i class="fas fa-sync-alt"></i> Actualizar cantidad
+                                    </button>
+                                </form>
+
+                                <!-- ✅ Botón de eliminar -->
+                                <form method="post" action="{{ path('remove_cart', {'id': item.id}) }}">
+                                    <button type="submit" class="btn btn-danger w-100 mt-2">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-white"><i class="fas fa-shopping-basket"></i> Tu carrito está vacío.</p>
+    {% endif %}
+</div>
+{% endblock %}

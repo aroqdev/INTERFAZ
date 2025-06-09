@@ -1,0 +1,35 @@
+{% extends "user/index.html.twig" %}
+
+{% block profile_content %}
+<h3 class="text-primary"><i class="fas fa-shopping-cart"></i> Mis Compras</h3>
+
+{% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type }} fade show">
+            <i class="fas fa-exclamation-circle"></i> {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{% if compras|length > 0 %}
+    <div class="list-group">
+        {% for compra in compras %}
+            <a href="{{ path('product_details', {'id': compra.idProducto.id}) }}" class="text-decoration-none text-dark">
+                <div class="list-group-item d-flex align-items-center gap-3">
+                    <!-- 🔹 Imagen del producto -->
+                    <img src="{{ compra.idProducto.imagen }}" alt="{{ compra.idProducto.nombre }}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+
+                    <!-- 🔹 Detalles del producto -->
+                    <div>
+                        <p><strong><i class="fas fa-box"></i> Producto:</strong> {{ compra.idProducto.nombre }}</p>
+                        <p><strong><i class="fas fa-boxes"></i> Cantidad:</strong> {{ compra.cantidad }}</p>
+                        <p><strong><i class="fas fa-euro-sign"></i> Precio Total:</strong> €{{ compra.precioTotal }}</p>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-center text-secondary mt-4"><i class="fas fa-times-circle"></i> Aún no has realizado compras.</p>
+{% endif %}
+{% endblock %}

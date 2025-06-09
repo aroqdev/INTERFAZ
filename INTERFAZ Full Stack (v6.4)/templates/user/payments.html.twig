@@ -1,0 +1,95 @@
+{% extends "user/index.html.twig" %}
+
+{% block profile_content %}
+<h3 class="text-primary"><i class="fas fa-credit-card"></i> Métodos de Pago</h3>
+
+{% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type }} fade show">
+            <i class="fas fa-exclamation-circle"></i> {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{% if payments|length > 0 %}
+    <div class="list-group">
+        {% for payment in payments %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    {% if payment.numeroTarjeta %}
+                        <span class="badge bg-primary"><i class="fas fa-credit-card"></i> Tarjeta de Crédito/Débito</span>
+                        <p><strong><i class="fas fa-credit-card"></i> Tarjeta:</strong> **** **** **** {{ payment.numeroTarjeta|slice(-4) }}</p>
+                        <p><strong><i class="fas fa-user"></i> Titular:</strong> {{ payment.nombreTitular }}</p>
+                        <p><strong><i class="fas fa-calendar-alt"></i> Vencimiento:</strong> {{ payment.fechaVencimiento }}</p>
+                    {% elseif payment.paypal %}
+                        <span class="badge bg-info"><i class="fab fa-paypal"></i> PayPal</span>
+                        {% set emailParts = payment.paypal|split('@') %}
+                        <p><strong><i class="fas fa-envelope"></i> PayPal:</strong> {{ emailParts[0]|slice(0,3) }}***@{{ emailParts[1] }}</p>
+                    {% elseif payment.cuentaCorriente %}
+                        <span class="badge bg-warning"><i class="fas fa-university"></i> Cuenta Corriente</span>
+                        <p><strong><i class="fas fa-university"></i> Cuenta Corriente:</strong> ****{{ payment.cuentaCorriente|slice(-4) }}</p>
+                    {% elseif payment.regalo %}
+                        <span class="badge bg-success"><i class="fas fa-gift"></i> Tarjeta Regalo</span>
+                        <p><strong><i class="fas fa-gift"></i> Tarjeta Regalo:</strong> ****{{ payment.regalo|slice(-4) }}</p>
+                    {% endif %}
+                </div>
+                <div class="d-flex gap-2">
+                    {% if payment.activo %}
+                        <span class="badge bg-success mb-2"><i class="fas fa-check-circle"></i> Método Activo</span>
+                    {% else %}
+                        <form method="post" action="{{ path('set_active_payment', {'id': payment.id}) }}">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-toggle-on"></i> Activar
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    <!-- 🔹 Botón de modificar con ruta dinámica según el método de pago -->
+                    {% if payment.numeroTarjeta %}
+                        <a href="{{ path('edit_card_payment', {'id': payment.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Modificar
+                        </a>
+                    {% elseif payment.paypal %}
+                        <a href="{{ path('edit_paypal_payment', {'id': payment.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Modificar
+                        </a>
+                    {% elseif payment.cuentaCorriente %}
+                        <a href="{{ path('edit_bank_payment', {'id': payment.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Modificar
+                        </a>
+                    {% elseif payment.regalo %}
+                        <a href="{{ path('edit_gift_payment', {'id': payment.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Modificar
+                        </a>
+                    {% endif %}
+
+                    <!-- 🔹 Botón de eliminar -->
+                    <form method="post" action="{{ path('remove_payment', {'id': payment.id}) }}">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-secondary"><i class="fas fa-times-circle"></i> No tienes métodos de pago guardados.</p>
+{% endif %}
+<!-- 🔹 Botones para agregar cada tipo de pago -->
+<h4 class="text-center mt-4"><i class="fas fa-plus-circle"></i> Agregar un Nuevo Método de Pago</h4>
+<div class="d-flex justify-content-center gap-3 mt-3">
+    <a href="{{ path('add_card_payment') }}" class="btn btn-primary">
+        <i class="fas fa-credit-card"></i> Tarjeta de Crédito/Débito
+    </a>
+    <a href="{{ path('add_bank_payment') }}" class="btn btn-warning">
+        <i class="fas fa-university"></i> Cuenta Corriente
+    </a>
+    <a href="{{ path('add_paypal_payment') }}" class="btn btn-info">
+        <i class="fab fa-paypal"></i> PayPal
+    </a>
+    <a href="{{ path('add_gift_payment') }}" class="btn btn-success">
+        <i class="fas fa-gift"></i> Tarjeta Regalo
+    </a>
+</div>
+{% endblock %}

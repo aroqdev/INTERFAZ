@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}INTERFAZ{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        
+        <!-- FontAwesome para iconos -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <script src="{{ asset('js/bootstrap.bundle.min.js') }}"/>
+
+        {% block stylesheets %}
+        {% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block cabeza%}
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container">
+                    <a class="navbar-brand" href="{{ path('home') }}">
+                        <i class="fas fa-home"></i> INTERFAZ
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <form class="d-flex" role="search" action="{{ path('search') }}" method="GET">
+                        <input class="form-control form-control-sm" type="search" name="query" placeholder="Buscar">
+                        <button class="btn btn-outline-info btn-sm" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            {% if app.user and app.user.roles[0] is defined %}
+                                {% if app.user.roles[0] == 'ROLE_ADMIN' %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('admin_dashboard') }}">
+                                            <i class="fas fa-user-shield"></i> Perfil
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('cart') }}">
+                                            <i class="fas fa-shopping-cart"></i> Carrito
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('profile_data') }}">
+                                            <i class="fas fa-user"></i> Perfil
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="btn btn-outline-light btn-sm" href="{{ path('app_login') }}">
+                                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn btn-outline-success btn-sm" href="{{ path('app_register') }}">
+                                        <i class="fas fa-user-plus"></i> Registrarse
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% endblock %}
+        {% block body %}{% endblock %}
+    </body>
+</html>
