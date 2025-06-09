@@ -1,0 +1,58 @@
+INICIAR PROYECTO: symfony server:start
+
+LIMPIAR CACHE DEL PROYECTO: php bin/console cache:clear
+
+CREAR PROYECTO
+symfony new interfaz --version=6.4 --webapp
+
+PAQUETES A INSTALAR
+composer require symfony/security-bundle
+
+BASE DE DATOS
+DATABASE_URL="mysql://root:@127.0.0.1:3306/interfaz?serverVersion=10.4.32"
+
+CREAR BASE DE DATOS
+php bin/console doctrine:database:create
+
+CREAR ENTIDAD
+Entidad personalizada
+php bin/console make:entity Usuario
+Entidad proporcionada por Symfony
+php bin/console make:user
+
+CREAR MIGRACION
+php bin/console make:migration
+
+EJECUTAR MIGRACION
+php bin/console doctrine:migrations:migrate
+
+ACTUALIZAR METADATA
+php bin/console doctrine:migrations:sync-metadata-storage
+
+CREAR CONTROLADOR DE REGISTRO
+php bin/console make:controller Registration
+
+CREAR FORMULARIO DE REGISTRO
+php bin/console make:form Register
+
+CREAR CONTROLADOR DE LOGIN
+php bin/console make:controller Login
+
+CREAR CONTROLADOR DEL USUARIO
+php bin/console make:controller UserController
+
+CREAR CONTROLADOR DE ADMINISTRADOR
+php bin/console make:controller AdminController
+
+CREAR FORMULARIO DE USUARIO
+php bin/console make:form User
+
+INSTALAR PAQUETES DE SEEDERS:
+composer require doctrine/doctrine-fixtures-bundle
+
+EJECUTAR SEEDERS:
+php bin/console doctrine:fixtures:load
+
+VACIAR VERSION DE MIGRACIONES:
+php bin/console doctrine:migrations:version --delete --all
+
