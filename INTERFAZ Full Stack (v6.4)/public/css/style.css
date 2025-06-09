@@ -1,0 +1,67 @@
+body {
+    background-color: black !important;
+}
+
+/* 🔹 Animación de aparición suave */
+.animate-fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 🔹 Efecto de entrada en los campos */
+.animate-input input {
+    transition: box-shadow 0.3s ease;
+}
+
+.animate-input input:focus {
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+/* 🔹 Efecto hover en botón */
+.animate-hover {
+    transition: background-color 0.3s ease;
+}
+
+.animate-hover:hover {
+    background-color: #0056b3;
+}
+
+/* 🔹 Animación de resaltado en email */
+.animate-highlight {
+    animation: highlight 1s ease-in-out alternate infinite;
+}
+
+@keyframes highlight {
+    from {
+        color: #212529;
+    }
+    to {
+        color: #007bff;
+    }
+}
+
+/* 🔹 Animación de filas en la tabla */
+.animate-row {
+    animation: fadeRow 0.8s ease-in-out;
+}
+
+@keyframes fadeRow {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
